@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Image Detail{% endblock %}
+
+{% block content %}
+<style>
+    .table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px; /* Adjust the width as needed */
+    }
+    
+    .table td:hover {
+        overflow: visible;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+</style>
+<div class="container mt-5">
+    <h1 class="mb-4">Image Detail</h1>
+
+    <!-- Image Display with Preview -->
+    <div class="card shadow-lg border-0 p-4">
+        <div class="text-center">
+            <img src="{{ image.image.url }}" class="img-fluid rounded shadow" alt="Image for case" style="max-height: 500px; object-fit: cover; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imagePreviewModal">
+        </div>
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-outline-primary px-4" data-bs-toggle="modal" data-bs-target="#imagePreviewModal">View Full Image</button>
+            <a href="{% url 'image_verification' image.id %}" class="btn btn-primary px-4">Verify This Image</a>
+            <a href="{{ image.image.url }}" download class="btn btn-secondary px-4">Download Image</a>
+        </div>
+    </div>
+
+    <!-- Modal for Full Image Preview -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imagePreviewModalLabel">Full Image Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ image.image.url }}" class="img-fluid rounded" alt="Full Image Preview">
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ image.image.url }}" download class="btn btn-secondary">Download Image</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Information Section -->
+    <div class="card mt-4 shadow-lg border-0">
+        <div class="card-body">
+            <h4 class="mb-3 text-primary">General Information</h4>
+            <p><strong>Uploaded By:</strong> {{ image.uploaded_by }}</p>
+            <p><strong>Uploaded At:</strong> {{ image.uploaded_at }}</p>
+        </div>
+    </div>
+
+    <!-- Verification Details Section -->
+    <div class="card mt-4 shadow-lg border-0">
+        <div class="card-body">
+            <h4 class="mb-3 text-success">Verification Details</h4>
+            <p><strong>SHA-256 Hash:</strong></p>
+            <pre class="bg-light p-3 rounded border">{{ image.sha256_hash }}</pre>
+
+            <p><strong>Perceptual Hash:</strong></p>
+            <pre class="bg-light p-3 rounded border">{{ image.perceptual_hash }}</pre>
+
+            <p><strong>Digital Signature:</strong></p>
+            <pre class="bg-light p-3 rounded border text-break">{{ image.digital_signature }}</pre>
+        </div>
+    </div>
+
+    <!-- Metadata Table -->
+    <div class="card mt-4 shadow-lg border-0">
+        <div class="card-body">
+            <h4 class="mb-3 text-info">Metadata</h4>
+            {% if metadata %}
+                <table class="table table-striped mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, value in metadata.items %}
+                            <tr>
+                                <td><strong>{{ key }}</strong></td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No metadata available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-4">
+        <a href="{% url 'case_detail' image.case.id %}" class="btn px-4" style="background-color: #343a40; color: white;">Back to Case Detail</a>
+    </div>
+</div>
+{% endblock %}

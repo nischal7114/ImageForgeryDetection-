@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Case Detail - {{ case.case_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">{{ case.case_name }}</h1>
+
+    <div class="card shadow p-4 mb-4">
+        <h3 class="mb-3">Case Information</h3>
+        <p><strong>Description:</strong> {{ case.description }}</p>
+        <p><strong>Status:</strong> {{ case.get_status_display }}</p>
+    </div>
+
+    <div class="card shadow p-4 mb-4">
+        <h3 class="mb-3">Upload new image</h3>
+        <div class="mb-4">
+            <a href="{% url 'image_upload' %}?case_id={{ case.id }}" class="btn btn-primary">Upload New Image</a>
+        </div>
+    </div>
+
+    <div class="card shadow p-4">
+        <h3 class="mb-4">Uploaded Images</h3>
+        {% if images %}
+            <div class="row">
+                {% for image in images %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow">
+                            <a href="{% url 'image_detail' image.id %}">
+                                <img src="{{ image.image.url }}" class="card-img-top rounded" alt="Image for case" style="max-height: 300px; object-fit: cover;">
+                            </a>
+                            <div class="card-body">
+                                <p><strong>Uploaded By:</strong> {{ image.uploaded_by }}</p>
+                                <p><strong>Uploaded At:</strong> {{ image.uploaded_at }}</p>
+                            </div>
+                            <div class="card-footer bg-light">
+                                <p><strong>SHA-256:</strong> {{ image.sha256_hash|truncatechars:20 }}</p>
+                                <p><strong>Perceptual Hash:</strong> {{ image.perceptual_hash }}</p>
+                                <a href="{% url 'image_detail' image.id %}" class="btn btn-sm" style="background-color: #343a40; color: white;">View Full Details</a>
+                                <a href="{% url 'image_delete' image.id %}" class="btn btn-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted text-center">No images uploaded for this case yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+{% endblock %}

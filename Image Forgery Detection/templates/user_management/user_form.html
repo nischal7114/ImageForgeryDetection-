@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{% if edit %}Edit User{% else %}Create User{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{% if edit %}Edit User{% else %}Create User{% endif %}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="card p-4">
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">{% if edit %}Update{% else %}Create{% endif %} User</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'user_list' %}" class="btn btn-secondary">Back to User List</a>
+    </div>
+</div>
+{% endblock %}

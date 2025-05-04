@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Create or Edit Case{% endblock %}
+
+{% block content %}
+<div class="container mt-5"> 
+    <h1 class="mb-4">Create/Edit Case</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <a href="{% url 'case_list' %}" class="btn mt-3" style="background-color: #343a40; color: white;">Back to Case List</a>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Activity Log{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">📄 Activity Log</h1>
+    <form method="get" class="mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label for="userFilter" class="form-label">Filter by User</label>
+                <select name="user" id="userFilter" class="form-select">
+                    <option value="">All Users</option>
+                    {% for user in users %}
+                    <option value="{{ user.id }}" {% if user_filter == user.id|stringformat:"s" %}selected{% endif %}>{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="caseFilter" class="form-label">Filter by Case</label>
+                <select name="case" id="caseFilter" class="form-select">
+                    <option value="">All Cases</option>
+                    {% for case in cases %}
+                    <option value="{{ case.id }}" {% if case_filter == case.id|stringformat:"s" %}selected{% endif %}>{{ case.case_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filter</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'download_logs_pdf' %}?user={{ user_filter|default_if_none:'' }}&case={{ case_filter|default_if_none:'' }}" class="btn btn-secondary w-100">Download PDF</a>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Case</th>
+                    <th>Image</th>
+                    <th>Timestamp</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.user.username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{% if log.case %}{{ log.case.case_name }}{% else %}N/A{% endif %}</td>
+                    <td>{% if log.image %}{{ log.image.id }}{% else %}N/A{% endif %}</td>
+                    <td>{{ log.timestamp }}</td>
+                    <td>{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

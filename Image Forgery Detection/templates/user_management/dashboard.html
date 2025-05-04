@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Image Forgery Detection{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">📊 Dashboard</h2>
+    <hr>
+
+    <!-- Welcome Message -->
+    <div class="alert alert-info text-center">
+        <h5>Welcome, {{ user.username }}!</h5>
+        <p>Your role: <strong>{{ user.groups.first }}</strong></p>
+    </div>
+
+    <div class="row">
+        <!-- Cases Section -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">📂 Case Management</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>Manage and review cases related to image forgery detection.</p>
+                    <a href="{% url 'case_list' %}" class="btn btn-primary btn-sm"><i class="fa-solid fa-folder-open"></i> View Cases</a>
+                    <a href="{% url 'case_create' %}" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-plus"></i> Add New Case</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Section (Visible to Admins Only) -->
+        {% if user.is_superuser %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">👤 User Management</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>Create, edit, and manage user roles & access levels.</p>
+                    <a href="{% url 'user_list' %}" class="btn btn-dark btn-sm"><i class="fa-solid fa-users"></i> Manage Users</a>
+                    <a href="{% url 'user_create' %}" class="btn btn-outline-dark btn-sm"><i class="fa-solid fa-user-plus"></i> Add New User</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Logs Section (Visible to Admins and Superusers Only) -->
+        {% if is_admin_or_superuser %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">📄 Logs</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>View and filter activity logs.</p>
+                    <a href="{% url 'activity_log_list' %}" class="btn btn-secondary btn-sm"><i class="fa-solid fa-file-alt"></i> All Logs</a>
+                    <a href="{% url 'activity_log_list' %}?user={{ user.id }}" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-user"></i> My Logs</a>
+                    <a href="{% url 'activity_log_list' %}?case=1" class="btn btn-outline-secondary btn-sm"><i class="fa-solid fa-folder"></i> Case Logs</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
